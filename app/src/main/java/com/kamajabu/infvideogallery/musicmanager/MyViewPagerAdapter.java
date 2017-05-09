@@ -15,6 +15,9 @@ import com.kamajabu.infvideogallery.model.Image;
 
 import java.util.ArrayList;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 /**
  * Created by Kamil Buczel on 24.04.2017.
  */
@@ -24,6 +27,8 @@ public class MyViewPagerAdapter extends PagerAdapter {
     private LayoutInflater layoutInflater;
     private ArrayList<Image> images;
     private Context activityContext;
+    VideoView videoView;
+    View placeholder;
 
     public MyViewPagerAdapter(ArrayList<Image> images, Context context) {
         this.images = images;
@@ -41,7 +46,7 @@ public class MyViewPagerAdapter extends PagerAdapter {
 
 //            ImageView imageViewPreview = (ImageView) view.findViewById(R.id.image_preview);
 
-        final VideoView videoView =
+        videoView =
                 (VideoView) view.findViewById(R.id.videoView);
 
 
@@ -53,13 +58,15 @@ public class MyViewPagerAdapter extends PagerAdapter {
         final ProgressBar finalProgressBar = progressBar;
         ProgressBar finalProgressBar1 = progressBar;
         videoView.setOnPreparedListener(mp -> {
-//            View placeholder = view.findViewById(R.id.placeholder);
-//            placeholder.setVisibility(View.GONE);
-            finalProgressBar1.setVisibility(View.VISIBLE);
+
+            finalProgressBar1.setVisibility(VISIBLE);
             mp.start();
             mp.setOnVideoSizeChangedListener((mp1, arg1, arg2) -> {
                 // TODO Auto-generated method stub
-                finalProgressBar.setVisibility(View.GONE);
+                            placeholder = view.findViewById(R.id.placeholder);
+            placeholder.setVisibility(GONE);
+                finalProgressBar.setVisibility(GONE);
+
                 mp1.start();
             });
         });
@@ -85,5 +92,8 @@ public class MyViewPagerAdapter extends PagerAdapter {
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         container.removeView((View) object);
+        videoView.setVisibility(GONE);
+        videoView.setVisibility(VISIBLE);
+        placeholder.setVisibility(VISIBLE);
     }
 }
