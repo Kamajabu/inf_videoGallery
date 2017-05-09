@@ -20,10 +20,22 @@
         android:paddingBottom="10dp"
         android:gravity="center"
         android:layout_below="@id/player_header_bg">
-        <ImageView android:layout_width="wrap_content"
+        <ProgressBar
+            android:id="@+id/progressbar"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/adele"
-            android:id="@+id/image_preview" />
+            android:layout_centerInParent="true"
+            android:visibility="gone" />-->
+
+        <VideoView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/songThumbnail"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="17dp"
+            android:id="@+id/videoView"/>
     </LinearLayout>
+
+
 
 </RelativeLayout>
