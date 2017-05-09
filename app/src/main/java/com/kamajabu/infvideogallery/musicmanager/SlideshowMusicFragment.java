@@ -30,19 +30,6 @@ public class SlideshowMusicFragment extends MusicPlayerControls
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        Log.d("Fragment", "Resume");
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.d("Fragment", "Start");
-
-    }
-
-    @Override
     public void onActivityCreated(Bundle arg0) {
         super.onActivityCreated(arg0);
         getDialog().getWindow()
@@ -70,7 +57,7 @@ public class SlideshowMusicFragment extends MusicPlayerControls
         Context playListContext = v.getContext();
         songsList = songManager.getPlayListFromContent(playListContext);
 
-        myViewPagerAdapter = new MyViewPagerAdapter(images, getActivity());
+        myViewPagerAdapter = new MyViewPagerAdapter(images, getActivity(), this);
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
         setCurrentItem(selectedPosition);
@@ -84,7 +71,7 @@ public class SlideshowMusicFragment extends MusicPlayerControls
     }
 
     @OnClick(R.id.btnPlaylist)
-    public void buttonPlaylistWasClicked(){
+    public void buttonPlaylistWasClicked() {
         dismiss();
     }
 
@@ -197,6 +184,8 @@ public class SlideshowMusicFragment extends MusicPlayerControls
 
         @Override
         public void onPageScrolled(int arg0, float arg1, int arg2) {
+            ((MyViewPagerAdapter) viewPager.getAdapter()).clear();
+
         }
 
         @Override

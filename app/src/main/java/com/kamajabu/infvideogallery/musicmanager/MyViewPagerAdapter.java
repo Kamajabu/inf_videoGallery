@@ -29,10 +29,12 @@ public class MyViewPagerAdapter extends PagerAdapter {
     private Context activityContext;
     VideoView videoView;
     View placeholder;
+    SlideshowMusicFragment slideshowMusicFragment;
 
-    public MyViewPagerAdapter(ArrayList<Image> images, Context context) {
+    public MyViewPagerAdapter(ArrayList<Image> images, Context context, SlideshowMusicFragment slideshowMusicFragment) {
         this.images = images;
         this.activityContext = context;
+        this.slideshowMusicFragment =slideshowMusicFragment;
     }
 
     @Override
@@ -57,19 +59,21 @@ public class MyViewPagerAdapter extends PagerAdapter {
 
         final ProgressBar finalProgressBar = progressBar;
         ProgressBar finalProgressBar1 = progressBar;
+        placeholder = view.findViewById(R.id.placeholder);
+
         videoView.setOnPreparedListener(mp -> {
 
             finalProgressBar1.setVisibility(VISIBLE);
             mp.start();
             mp.setOnVideoSizeChangedListener((mp1, arg1, arg2) -> {
                 // TODO Auto-generated method stub
-                            placeholder = view.findViewById(R.id.placeholder);
             placeholder.setVisibility(GONE);
                 finalProgressBar.setVisibility(GONE);
 
                 mp1.start();
             });
         });
+
 
         container.addView(view);
 
@@ -92,8 +96,11 @@ public class MyViewPagerAdapter extends PagerAdapter {
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         container.removeView((View) object);
+    }
+
+    public void clear() {
         videoView.setVisibility(GONE);
         videoView.setVisibility(VISIBLE);
-        placeholder.setVisibility(VISIBLE);
+//        placeholder.setVisibility(VISIBLE);
     }
 }

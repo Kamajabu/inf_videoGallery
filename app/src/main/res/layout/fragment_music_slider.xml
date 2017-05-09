@@ -19,6 +19,9 @@
         android:paddingLeft="5dp"
         android:paddingRight="5dp">
 
+        <SurfaceView
+            android:layout_width="0px"
+            android:layout_height="0px" />
         <!-- Song Title -->
         <TextView
             android:id="@+id/songTitle"

@@ -110,4 +110,5 @@ public class MainActivity extends Activity {
         newFragment.setArguments(bundle);
         newFragment.show(ft, "slideshow");
     }
+
 }
