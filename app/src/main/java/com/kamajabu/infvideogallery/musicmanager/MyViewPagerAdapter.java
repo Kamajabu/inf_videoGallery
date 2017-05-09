@@ -1,9 +1,9 @@
 package com.kamajabu.infvideogallery.musicmanager;
 
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +34,7 @@ public class MyViewPagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
 
         ProgressBar progressBar = null;
-        String videoUrl = "http://www.ebookfrenzy.com/android_book/movie.mp4";
+        String videoUrl = "https://player.vimeo.com/external/212638612.sd.mp4?s=49b6d5208d2f45308b37c1fcb551ecf33b388f30";
 
         layoutInflater = (LayoutInflater) activityContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.image_fullscreen_preview, container, false);
@@ -49,29 +49,27 @@ public class MyViewPagerAdapter extends PagerAdapter {
         Uri videoUri = Uri.parse(videoUrl);
         videoView.setVideoURI(videoUri);
         videoView.start();
-        progressBar.setVisibility(View.VISIBLE);
+
         final ProgressBar finalProgressBar = progressBar;
-        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
+        ProgressBar finalProgressBar1 = progressBar;
+        videoView.setOnPreparedListener(mp -> {
+//            View placeholder = view.findViewById(R.id.placeholder);
+//            placeholder.setVisibility(View.GONE);
+            finalProgressBar1.setVisibility(View.VISIBLE);
+            mp.start();
+            mp.setOnVideoSizeChangedListener((mp1, arg1, arg2) -> {
                 // TODO Auto-generated method stub
-                mp.start();
-                mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
-                    @Override
-                    public void onVideoSizeChanged(MediaPlayer mp, int arg1,
-                                                   int arg2) {
-                        // TODO Auto-generated method stub
-                        finalProgressBar.setVisibility(View.GONE);
-                        mp.start();
-                    }
-                });
-            }
+                finalProgressBar.setVisibility(View.GONE);
+                mp1.start();
+            });
         });
 
         container.addView(view);
 
+        Log.d("Adapter", "Inistiated");
         return view;
     }
+
 
     @Override
     public int getCount() {

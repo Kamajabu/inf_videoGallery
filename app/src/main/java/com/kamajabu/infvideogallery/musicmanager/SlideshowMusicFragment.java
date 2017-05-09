@@ -4,9 +4,9 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +15,6 @@ import android.widget.SeekBar;
 import com.kamajabu.infvideogallery.R;
 import com.kamajabu.infvideogallery.model.Image;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -28,6 +27,19 @@ public class SlideshowMusicFragment extends MusicPlayerControls
     public static SlideshowMusicFragment newInstance() {
         SlideshowMusicFragment f = new SlideshowMusicFragment();
         return f;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("Fragment", "Resume");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d("Fragment", "Start");
+
     }
 
     @Override
@@ -48,13 +60,11 @@ public class SlideshowMusicFragment extends MusicPlayerControls
         images = (ArrayList<Image>) getArguments().getSerializable("images");
         selectedPosition = getArguments().getInt("position");
 
-        mp = new MediaPlayer();
         songManager = new SongsManager();
         utils = new Utilities();
 
         // Listeners
         songProgressBar.setOnSeekBarChangeListener(this); // Important
-        mp.setOnCompletionListener(this); // Important
 
         // Getting all songs list
         Context playListContext = v.getContext();
@@ -63,11 +73,12 @@ public class SlideshowMusicFragment extends MusicPlayerControls
         myViewPagerAdapter = new MyViewPagerAdapter(images, getActivity());
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
-
         setCurrentItem(selectedPosition);
 
         // By default play first song
         playSong(selectedPosition);
+
+        Log.d("Fragment", "Created");
 
         return v;
     }
@@ -117,29 +128,7 @@ public class SlideshowMusicFragment extends MusicPlayerControls
 
     public void playSong(int songIndex) {
         // Play song
-        try {
-            mp.reset();
-            mp.setDataSource(getActivity(),
-                    Uri.parse(RES_PREFIX + songsList.get(songIndex).get("songPath")));
-            //mp.setDataSource(songsList.get(songIndex).get("songPath"));
-            mp.prepare();
-            mp.start();
-            // Displaying Song title
-            String songTitle = songsList.get(songIndex).get("songTitle");
-            songTitleLabel.setText(songTitle);
 
-            // Changing Button Image to pause image
-            btnPlay.setImageResource(R.drawable.btn_pause);
-
-            // set Progress bar values
-            songProgressBar.setProgress(0);
-            songProgressBar.setMax(100);
-
-            // Updating progress bar
-            updateProgressBar();
-        } catch (IllegalArgumentException | IllegalStateException | IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void updateProgressBar() {
@@ -148,21 +137,7 @@ public class SlideshowMusicFragment extends MusicPlayerControls
 
     private Runnable mUpdateTimeTask = new Runnable() {
         public void run() {
-            long totalDuration = mp.getDuration();
-            long currentDuration = mp.getCurrentPosition();
 
-            // Displaying Total Duration time
-            songTotalDurationLabel.setText("" + utils.milliSecondsToTimer(totalDuration));
-            // Displaying time completed playing
-            songCurrentDurationLabel.setText("" + utils.milliSecondsToTimer(currentDuration));
-
-            // Updating progress bar
-            int progress = (int) (utils.getProgressPercentage(currentDuration, totalDuration));
-            //Log.d("Progress", ""+progress);
-            songProgressBar.setProgress(progress);
-
-            // Running this thread after 100 milliseconds
-            mHandler.postDelayed(this, 100);
         }
     };
 
@@ -179,15 +154,7 @@ public class SlideshowMusicFragment extends MusicPlayerControls
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        mHandler.removeCallbacks(mUpdateTimeTask);
-        int totalDuration = mp.getDuration();
-        int currentPosition = utils.progressToTimer(seekBar.getProgress(), totalDuration);
 
-        // forward or backward to certain seconds
-        mp.seekTo(currentPosition);
-
-        // update timer progress again
-        updateProgressBar();
     }
 
     @Override
@@ -241,7 +208,6 @@ public class SlideshowMusicFragment extends MusicPlayerControls
     public void onDestroyView() {
         super.onDestroyView();
         mHandler.removeCallbacks(mUpdateTimeTask);
-        mp.release();
     }
 
     @Override

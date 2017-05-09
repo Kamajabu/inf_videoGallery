@@ -1,7 +1,6 @@
 package com.kamajabu.infvideogallery.musicmanager;
 
 import android.app.DialogFragment;
-import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.widget.ImageButton;
@@ -33,7 +32,6 @@ public abstract class MusicPlayerControls extends DialogFragment {
     protected static final String RES_PREFIX = "android.resource://com.kamajabu.infmusicgallery/";
 
     // Media Player
-    protected MediaPlayer mp;
     // Handler to update UI timer, progress bar etc,.
     protected Handler mHandler = new Handler();
 
@@ -75,51 +73,19 @@ public abstract class MusicPlayerControls extends DialogFragment {
 
     @OnClick(R.id.btnPlay)
     public void playButtonWasClicked() {
-        // check for already playing
-        if (mp.isPlaying()) {
-            if (mp != null) {
-                mp.pause();
-                // Changing button image to play button
-                btnPlay.setImageResource(R.drawable.btn_play);
-            }
-        } else {
-            // Resume song
-            if (mp != null) {
-                mp.start();
-                // Changing button image to pause button
-                btnPlay.setImageResource(R.drawable.btn_pause);
-            }
-        }
+
 
     }
 
     @OnClick(R.id.btnForward)
     public void buttonForwardWasClicked() {
 
-        // get current song position
-        int currentPosition = mp.getCurrentPosition();
-        // check if seekForward time is lesser than song duration
-        if (currentPosition + seekForwardTime <= mp.getDuration()) {
-            // forward song
-            mp.seekTo(currentPosition + seekForwardTime);
-        } else {
-            // forward to end position
-            mp.seekTo(mp.getDuration());
-        }
+
     }
 
     @OnClick(R.id.btnBackward)
     public void buttonBackwardWasClicked() {
-        // get current song position
-        int currentPosition = mp.getCurrentPosition();
-        // check if seekBackward time is greater than 0 sec
-        if (currentPosition - seekBackwardTime >= 0) {
-            // forward song
-            mp.seekTo(currentPosition - seekBackwardTime);
-        } else {
-            // backward to starting position
-            mp.seekTo(0);
-        }
+
 
     }
 
