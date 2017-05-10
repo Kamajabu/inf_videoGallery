@@ -1,6 +1,7 @@
 package com.kamajabu.infvideogallery.activity;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,6 +14,7 @@ import com.kamajabu.infvideogallery.adapter.GalleryAdapter;
 import com.kamajabu.infvideogallery.adapter.RecyclerTouchListener;
 import com.kamajabu.infvideogallery.model.DataLoader;
 import com.kamajabu.infvideogallery.musicmanager.VideoSlideshowContainerFragment;
+import com.kamajabu.infvideogallery.musicmanager.VideoViewElements;
 
 import java.util.ArrayList;
 
@@ -20,6 +22,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public class MainActivity extends Activity {
 
@@ -68,15 +72,46 @@ public class MainActivity extends Activity {
 
     private void createGalleryListener() {
         galleryListener = new GalleryAdapter.ClickListener() {
+            int previewIndex = -1;
+
             @Override
             public void onClick(View view, int position) {
+
                 goToFullScreenPreview(position);
             }
 
             @Override
             public void onLongClick(View view, int position) {
+                loadAndStartVideo(mAdapter.videoViewElements[position]);
+                previewIndex = position;
+            }
+
+            @Override
+            public void onClickFinish(View child, int position) {
+                if(previewIndex>0) {
+                    mAdapter.videoViewElements[previewIndex].video.setVisibility(GONE);
+                    mAdapter.videoViewElements[previewIndex].progressBar.setVisibility(GONE);
+                    mAdapter.videoViewElements[previewIndex].placeholder.setVisibility(VISIBLE);
+                }
             }
         };
+    }
+
+    public void loadAndStartVideo(VideoViewElements currentElements) {
+        currentElements.video.setVisibility(VISIBLE);
+
+        Uri videoUri = Uri.parse(currentElements.videoUrl);
+
+        currentElements.video.setVideoURI(videoUri);
+        currentElements.progressBar.setVisibility(VISIBLE);
+        currentElements.video.setOnPreparedListener(mp -> {
+            mp.start();
+            //this shit is needed for avoiding making a hole in fragment before starting video
+            mp.setOnVideoSizeChangedListener((mp1, arg1, arg2) -> {
+                currentElements.progressBar.setVisibility(GONE);
+                currentElements.placeholder.setVisibility(GONE);
+            });
+        });
     }
 
     private void createScrollListener() {

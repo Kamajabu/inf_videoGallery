@@ -9,10 +9,10 @@ import android.widget.VideoView;
  */
 
 public class VideoViewElements {
-    VideoView video;
-    ImageView placeholder;
-    ProgressBar progressBar;
-    String videoUrl;
+    public VideoView video;
+    public ImageView placeholder;
+    public ProgressBar progressBar;
+    public String videoUrl;
 
     public VideoViewElements(VideoView video, ImageView placeholder, ProgressBar progressBar, String videoUrl) {
         this.video = video;
