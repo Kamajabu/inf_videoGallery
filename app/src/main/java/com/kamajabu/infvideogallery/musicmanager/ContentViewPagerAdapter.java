@@ -18,20 +18,23 @@ import java.util.ArrayList;
  * Created by Kamil Buczel on 24.04.2017.
  */
 
-public class MyViewPagerAdapter extends PagerAdapter {
+public class ContentViewPagerAdapter extends PagerAdapter {
 
     private LayoutInflater layoutInflater;
     private ArrayList<Image> images;
     private Context activityContext;
+    private boolean isFirstElement = true;
+    private VideoSlideshowContainerFragment parent;
 
 
     public VideoViewElements[] videoViewElements;
 
 
-    public MyViewPagerAdapter(ArrayList<Image> images, Context context) {
+    public ContentViewPagerAdapter(ArrayList<Image> images, Context context, VideoSlideshowContainerFragment parent) {
         this.images = images;
         this.activityContext = context;
         this.videoViewElements = new VideoViewElements[images.size()];
+        this.parent = parent;
     }
 
     @Override
@@ -45,6 +48,11 @@ public class MyViewPagerAdapter extends PagerAdapter {
         ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
 
         videoViewElements[position] = new VideoViewElements(videoView, placeholder, progressBar);
+
+        if (isFirstElement) {
+            parent.loadAndStartVideo(videoViewElements[position]);
+            isFirstElement = false;
+        }
 
 //        Bitmap as = ThumbnailUtils.createVideoThumbnail(videoUrl, MediaStore.Video.Thumbnails.MINI_KIND);
 
@@ -62,7 +70,6 @@ public class MyViewPagerAdapter extends PagerAdapter {
     public boolean isViewFromObject(View view, Object obj) {
         return view == obj;
     }
-
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {

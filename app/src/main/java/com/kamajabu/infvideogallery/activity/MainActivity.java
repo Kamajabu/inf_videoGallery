@@ -12,7 +12,7 @@ import com.kamajabu.infvideogallery.R;
 import com.kamajabu.infvideogallery.adapter.GalleryAdapter;
 import com.kamajabu.infvideogallery.adapter.RecyclerTouchListener;
 import com.kamajabu.infvideogallery.model.DataLoader;
-import com.kamajabu.infvideogallery.musicmanager.SlideshowMusicFragment;
+import com.kamajabu.infvideogallery.musicmanager.VideoSlideshowContainerFragment;
 
 import java.util.ArrayList;
 
@@ -105,7 +105,7 @@ public class MainActivity extends Activity {
         android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.animator.anim_slide_in_top, R.animator.anim_slide_out_bottom);
 
-        SlideshowMusicFragment newFragment = SlideshowMusicFragment.newInstance();
+        VideoSlideshowContainerFragment newFragment = VideoSlideshowContainerFragment.newInstance();
         newFragment.setCancelable(false);
         newFragment.setArguments(bundle);
         newFragment.show(ft, "slideshow");

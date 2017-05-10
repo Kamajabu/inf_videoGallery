@@ -25,15 +25,16 @@ import butterknife.OnClick;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class SlideshowMusicFragment extends MusicPlayerControls
+public class VideoSlideshowContainerFragment extends VideoPlayerControlsAbstract
         implements MediaPlayer.OnCompletionListener, SeekBar.OnSeekBarChangeListener {
 
     ViewPager.OnPageChangeListener viewPagerPageChangeListener;
 
-    public static SlideshowMusicFragment newInstance() {
-        SlideshowMusicFragment f = new SlideshowMusicFragment();
+    public static VideoSlideshowContainerFragment newInstance() {
+        VideoSlideshowContainerFragment f = new VideoSlideshowContainerFragment();
         return f;
     }
+
 
     @Override
     public void onActivityCreated(Bundle arg0) {
@@ -63,18 +64,16 @@ public class SlideshowMusicFragment extends MusicPlayerControls
         Context playListContext = v.getContext();
         songsList = songManager.getPlayListFromContent(playListContext);
 
-        myViewPagerAdapter = new MyViewPagerAdapter(images, getActivity());
+        myViewPagerAdapter = new ContentViewPagerAdapter(images, getActivity(), this);
         viewPager.setAdapter(myViewPagerAdapter);
-
-        setCurrentItem(selectedPosition);
 
         viewPagerPageChangeListener = new VideoViewPageListener(currentVideoIndex, viewPager, this);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
+        setCurrentItem(selectedPosition);
+
 
         // By default play first song
 //        playSong(selectedPosition);
-
-        
 
         Log.d("Fragment", "Created");
 
@@ -102,7 +101,7 @@ public class SlideshowMusicFragment extends MusicPlayerControls
     @OnClick(R.id.btnPlaylist)
     public void buttonPlaylistWasClicked() {
 
-        VideoViewElements currentElements = ((MyViewPagerAdapter) viewPager.getAdapter()).videoViewElements[currentVideoIndex];
+        VideoViewElements currentElements = ((ContentViewPagerAdapter) viewPager.getAdapter()).videoViewElements[currentVideoIndex];
 
         currentElements.placeholder.addOnLayoutChangeListener((a, w, e, r, t, y, u, i, o) ->
                 dismiss()

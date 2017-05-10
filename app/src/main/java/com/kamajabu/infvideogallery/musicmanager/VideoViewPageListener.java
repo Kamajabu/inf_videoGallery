@@ -14,12 +14,12 @@ public class VideoViewPageListener implements ViewPager.OnPageChangeListener {
     boolean positionChanged = false;
     int previousVideoIndex = 0;
     protected int currentVideoIndex = 0;
-    SlideshowMusicFragment parent;
+    VideoSlideshowContainerFragment parent;
 
 
     protected ViewPager viewPager;
 
-    public VideoViewPageListener(int currentVideoIndex, ViewPager viewPager, SlideshowMusicFragment parent) {
+    public VideoViewPageListener(int currentVideoIndex, ViewPager viewPager, VideoSlideshowContainerFragment parent) {
         this.currentVideoIndex = currentVideoIndex;
         this.viewPager = viewPager;
         this.parent = parent;
@@ -40,9 +40,9 @@ public class VideoViewPageListener implements ViewPager.OnPageChangeListener {
     @Override
     public void onPageScrollStateChanged(int state) {
 
-        VideoViewElements currentElements = ((MyViewPagerAdapter) viewPager.getAdapter())
+        VideoViewElements currentElements = ((ContentViewPagerAdapter) viewPager.getAdapter())
                 .videoViewElements[currentVideoIndex];
-        VideoViewElements previousElements = ((MyViewPagerAdapter) viewPager.getAdapter())
+        VideoViewElements previousElements = ((ContentViewPagerAdapter) viewPager.getAdapter())
                 .videoViewElements[previousVideoIndex];
 
         if (state == SCROLL_STATE_IDLE && positionChanged) {

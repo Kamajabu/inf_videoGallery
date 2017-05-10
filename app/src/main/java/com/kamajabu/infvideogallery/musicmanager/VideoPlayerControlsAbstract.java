@@ -21,11 +21,11 @@ import butterknife.OnClick;
  * Created by Kamil Buczel on 09.04.2017.
  */
 
-public abstract class MusicPlayerControls extends DialogFragment {
+public abstract class VideoPlayerControlsAbstract extends DialogFragment {
 
     protected ArrayList<Image> images;
     protected ViewPager viewPager;
-    protected MyViewPagerAdapter myViewPagerAdapter;
+    protected ContentViewPagerAdapter myViewPagerAdapter;
     protected int selectedPosition = 0;
 
     //music player fields
@@ -73,7 +73,7 @@ public abstract class MusicPlayerControls extends DialogFragment {
     @OnClick(R.id.btnPlay)
     public void playButtonWasClicked() {
 
-//        ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[currentVideoIndex].setVisibility(View.VISIBLE);
+//        ((ContentViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[currentVideoIndex].setVisibility(View.VISIBLE);
 
     }
 
