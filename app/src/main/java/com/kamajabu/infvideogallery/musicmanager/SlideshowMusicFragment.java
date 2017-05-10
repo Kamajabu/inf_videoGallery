@@ -21,7 +21,6 @@ import java.util.Random;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
@@ -63,6 +62,7 @@ public class SlideshowMusicFragment extends MusicPlayerControls
 
         myViewPagerAdapter = new MyViewPagerAdapter(images, getActivity());
         viewPager.setAdapter(myViewPagerAdapter);
+        ViewPager.OnPageChangeListener viewPagerPageChangeListener = new VideoViewPageListener();
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
         setCurrentItem(selectedPosition);
 
@@ -76,14 +76,15 @@ public class SlideshowMusicFragment extends MusicPlayerControls
 
     @OnClick(R.id.btnPlaylist)
     public void buttonPlaylistWasClicked() {
-        ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[currentSongIndex].addOnLayoutChangeListener((a, w, e, r, t, y, u, i, o) ->
+
+        VideoViewElements currentElements = ((MyViewPagerAdapter) viewPager.getAdapter()).videoViewElements[currentVideoIndex];
+
+        currentElements.placeholder.addOnLayoutChangeListener((a, w, e, r, t, y, u, i, o) ->
                 dismiss()
         );
 
-        View currentPlaceholder = ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[currentSongIndex];
-
-        if (currentPlaceholder.getVisibility() == GONE) {
-            ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[currentSongIndex].setVisibility(VISIBLE);
+        if (currentElements.placeholder.getVisibility() == GONE) {
+            currentElements.placeholder.setVisibility(VISIBLE);
         } else {
             dismiss();
         }
@@ -94,28 +95,28 @@ public class SlideshowMusicFragment extends MusicPlayerControls
     @OnClick(R.id.btnNext)
     public void buttonNextWasClicked() {
         // check if next song is there or not
-        if (currentSongIndex < (songsList.size() - 1)) {
-            playSong(currentSongIndex + 1);
-            currentSongIndex = currentSongIndex + 1;
+        if (currentVideoIndex < (songsList.size() - 1)) {
+            playSong(currentVideoIndex + 1);
+            currentVideoIndex = currentVideoIndex + 1;
         } else {
             // play first song
             playSong(0);
-            currentSongIndex = 0;
+            currentVideoIndex = 0;
         }
-        viewPager.setCurrentItem(currentSongIndex);
+        viewPager.setCurrentItem(currentVideoIndex);
     }
 
     @OnClick(R.id.btnPrevious)
     public void buttonPreviousWasClicked() {
-        if (currentSongIndex > 0) {
-            playSong(currentSongIndex - 1);
-            currentSongIndex = currentSongIndex - 1;
+        if (currentVideoIndex > 0) {
+            playSong(currentVideoIndex - 1);
+            currentVideoIndex = currentVideoIndex - 1;
         } else {
             // play last song
             playSong(songsList.size() - 1);
-            currentSongIndex = songsList.size() - 1;
+            currentVideoIndex = songsList.size() - 1;
         }
-        viewPager.setCurrentItem(currentSongIndex);
+        viewPager.setCurrentItem(currentVideoIndex);
     }
 
     @Override
@@ -123,9 +124,9 @@ public class SlideshowMusicFragment extends MusicPlayerControls
                                  int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == 100) {
-            currentSongIndex = data.getExtras().getInt("songIndex");
+            currentVideoIndex = data.getExtras().getInt("songIndex");
             // play selected song
-            playSong(currentSongIndex);
+            playSong(currentVideoIndex);
         }
     }
 
@@ -164,21 +165,21 @@ public class SlideshowMusicFragment extends MusicPlayerControls
         // check for repeat is ON or OFF
         if (isRepeat) {
             // repeat is on play same song again
-            playSong(currentSongIndex);
+            playSong(currentVideoIndex);
         } else if (isShuffle) {
             // shuffle is on - play a random song
             Random rand = new Random();
-            currentSongIndex = rand.nextInt((songsList.size() - 1) - 0 + 1) + 0;
-            playSong(currentSongIndex);
+            currentVideoIndex = rand.nextInt((songsList.size() - 1) - 0 + 1) + 0;
+            playSong(currentVideoIndex);
         } else {
             // no repeat or shuffle ON - play next song
-            if (currentSongIndex < (songsList.size() - 1)) {
-                playSong(currentSongIndex + 1);
-                currentSongIndex = currentSongIndex + 1;
+            if (currentVideoIndex < (songsList.size() - 1)) {
+                playSong(currentVideoIndex + 1);
+                currentVideoIndex = currentVideoIndex + 1;
             } else {
                 // play first song
                 playSong(0);
-                currentSongIndex = 0;
+                currentVideoIndex = 0;
             }
         }
     }
@@ -187,52 +188,7 @@ public class SlideshowMusicFragment extends MusicPlayerControls
         viewPager.setCurrentItem(position, false);
     }
 
-    boolean positionChanged = false;
-    int previousPosition = 0;
-
     //	page change listener
-    ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
-
-        @Override
-        public void onPageSelected(int position) {
-            playSong(position);
-            previousPosition = currentSongIndex;
-            currentSongIndex = position;
-            positionChanged = true;
-
-
-        }
-
-        @Override
-        public void onPageScrolled(int arg0, float arg1, int arg2) {
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-            ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlayers[currentSongIndex].pause();
-
-            if (state == SCROLL_STATE_IDLE && positionChanged) {
-
-                View currentPlaceholder = ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[currentSongIndex];
-
-                if (currentPlaceholder != null) {
-                    currentPlaceholder.setVisibility(GONE);
-
-                }
-
-                View previousPlaceholder = ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[previousPosition];
-
-
-                if (previousPlaceholder != null) {
-                    previousPlaceholder.setVisibility(VISIBLE);
-
-                }
-
-                positionChanged = false;
-
-            }
-        }
-    };
 
     @Override
     public void onDestroyView() {

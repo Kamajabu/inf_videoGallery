@@ -3,7 +3,6 @@ package com.kamajabu.infvideogallery.musicmanager;
 import android.app.DialogFragment;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -38,9 +37,8 @@ public abstract class MusicPlayerControls extends DialogFragment {
 
     protected SongsManager songManager;
     protected Utilities utils;
-    protected int seekForwardTime = 5000; // 5000 milliseconds
-    protected int seekBackwardTime = 5000; // 5000 milliseconds
-    protected int currentSongIndex = 0;
+
+    protected int currentVideoIndex = 0;
     protected boolean isShuffle = false;
     protected boolean isRepeat = false;
     protected ArrayList<HashMap<String, String>> songsList = new ArrayList<>();
@@ -75,7 +73,7 @@ public abstract class MusicPlayerControls extends DialogFragment {
     @OnClick(R.id.btnPlay)
     public void playButtonWasClicked() {
 
-        ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[currentSongIndex].setVisibility(View.VISIBLE);
+//        ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[currentVideoIndex].setVisibility(View.VISIBLE);
 
     }
 
