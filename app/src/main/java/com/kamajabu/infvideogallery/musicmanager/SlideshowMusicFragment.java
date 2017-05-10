@@ -21,6 +21,8 @@ import java.util.Random;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
+import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class SlideshowMusicFragment extends MusicPlayerControls
@@ -74,19 +76,17 @@ public class SlideshowMusicFragment extends MusicPlayerControls
 
     @OnClick(R.id.btnPlaylist)
     public void buttonPlaylistWasClicked() {
-        ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[currentSongIndex].addOnLayoutChangeListener((a,w,e,r,t,y,u,i,o) ->
+        ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[currentSongIndex].addOnLayoutChangeListener((a, w, e, r, t, y, u, i, o) ->
                 dismiss()
         );
 
         View currentPlaceholder = ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[currentSongIndex];
 
-        if(currentPlaceholder.getVisibility()==View.GONE) {
+        if (currentPlaceholder.getVisibility() == GONE) {
             ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[currentSongIndex].setVisibility(VISIBLE);
         } else {
             dismiss();
         }
-
-
 
         //
     }
@@ -187,25 +187,50 @@ public class SlideshowMusicFragment extends MusicPlayerControls
         viewPager.setCurrentItem(position, false);
     }
 
+    boolean positionChanged = false;
+    int previousPosition = 0;
+
     //	page change listener
     ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
 
         @Override
         public void onPageSelected(int position) {
             playSong(position);
+            previousPosition = currentSongIndex;
             currentSongIndex = position;
+            positionChanged = true;
 
 
         }
 
         @Override
         public void onPageScrolled(int arg0, float arg1, int arg2) {
-            ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlayers[currentSongIndex].pause();
-            ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[currentSongIndex].setVisibility(VISIBLE);
         }
 
         @Override
-        public void onPageScrollStateChanged(int arg0) {
+        public void onPageScrollStateChanged(int state) {
+            ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlayers[currentSongIndex].pause();
+
+            if (state == SCROLL_STATE_IDLE && positionChanged) {
+
+                View currentPlaceholder = ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[currentSongIndex];
+
+                if (currentPlaceholder != null) {
+                    currentPlaceholder.setVisibility(GONE);
+
+                }
+
+                View previousPlaceholder = ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[previousPosition];
+
+
+                if (previousPlaceholder != null) {
+                    previousPlaceholder.setVisibility(VISIBLE);
+
+                }
+
+                positionChanged = false;
+
+            }
         }
     };
 

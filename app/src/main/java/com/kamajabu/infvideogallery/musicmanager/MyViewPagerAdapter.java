@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.VideoView;
 
@@ -29,7 +30,7 @@ public class MyViewPagerAdapter extends PagerAdapter {
     private Context activityContext;
 
     public VideoView[] arrayOfPlayers;
-    public View[] arrayOfPlaceholders;
+    public ImageView[] arrayOfPlaceholders;
 
 
 
@@ -37,7 +38,7 @@ public class MyViewPagerAdapter extends PagerAdapter {
         this.images = images;
         this.activityContext = context;
         arrayOfPlayers = new VideoView[images.size()];
-        arrayOfPlaceholders = new View[images.size()];
+        arrayOfPlaceholders = new ImageView[images.size()];
     }
 
 
@@ -53,10 +54,10 @@ public class MyViewPagerAdapter extends PagerAdapter {
 
 //            ImageView imageViewPreview = (ImageView) view.findViewById(R.id.image_preview);
         VideoView videoView;
-        View placeholder;
+        ImageView placeholder;
 
         videoView = (VideoView) view.findViewById(R.id.videoView);
-        placeholder = view.findViewById(R.id.placeholder);
+        placeholder = (ImageView) view.findViewById(R.id.placeholder);
 
         arrayOfPlayers[position] = videoView;
         arrayOfPlaceholders[position] = placeholder;
@@ -69,6 +70,8 @@ public class MyViewPagerAdapter extends PagerAdapter {
         final ProgressBar finalProgressBar = progressBar;
         ProgressBar finalProgressBar1 = progressBar;
 
+//        Bitmap as = ThumbnailUtils.createVideoThumbnail(videoUrl, MediaStore.Video.Thumbnails.MINI_KIND);
+
 //        videoView.start();
 
         videoView.setOnPreparedListener(mp -> {
@@ -77,7 +80,7 @@ public class MyViewPagerAdapter extends PagerAdapter {
             mp.start();
             mp.setOnVideoSizeChangedListener((mp1, arg1, arg2) -> {
                 // TODO Auto-generated method stub
-            placeholder.setVisibility(GONE);
+//            placeholder.setVisibility(GONE);
                 finalProgressBar.setVisibility(GONE);
 
 //                mp1.start();
