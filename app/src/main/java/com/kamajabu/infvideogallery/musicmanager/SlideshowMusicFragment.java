@@ -21,6 +21,8 @@ import java.util.Random;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static android.view.View.VISIBLE;
+
 public class SlideshowMusicFragment extends MusicPlayerControls
         implements MediaPlayer.OnCompletionListener, SeekBar.OnSeekBarChangeListener {
 
@@ -57,7 +59,7 @@ public class SlideshowMusicFragment extends MusicPlayerControls
         Context playListContext = v.getContext();
         songsList = songManager.getPlayListFromContent(playListContext);
 
-        myViewPagerAdapter = new MyViewPagerAdapter(images, getActivity(), this);
+        myViewPagerAdapter = new MyViewPagerAdapter(images, getActivity());
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
         setCurrentItem(selectedPosition);
@@ -72,7 +74,21 @@ public class SlideshowMusicFragment extends MusicPlayerControls
 
     @OnClick(R.id.btnPlaylist)
     public void buttonPlaylistWasClicked() {
-        dismiss();
+        ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[currentSongIndex].addOnLayoutChangeListener((a,w,e,r,t,y,u,i,o) ->
+                dismiss()
+        );
+
+        View currentPlaceholder = ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[currentSongIndex];
+
+        if(currentPlaceholder.getVisibility()==View.GONE) {
+            ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[currentSongIndex].setVisibility(VISIBLE);
+        } else {
+            dismiss();
+        }
+
+
+
+        //
     }
 
     @OnClick(R.id.btnNext)
@@ -122,10 +138,8 @@ public class SlideshowMusicFragment extends MusicPlayerControls
         mHandler.postDelayed(mUpdateTimeTask, 100);
     }
 
-    private Runnable mUpdateTimeTask = new Runnable() {
-        public void run() {
+    private Runnable mUpdateTimeTask = () -> {
 
-        }
     };
 
     @Override
@@ -180,12 +194,14 @@ public class SlideshowMusicFragment extends MusicPlayerControls
         public void onPageSelected(int position) {
             playSong(position);
             currentSongIndex = position;
+
+
         }
 
         @Override
         public void onPageScrolled(int arg0, float arg1, int arg2) {
-            ((MyViewPagerAdapter) viewPager.getAdapter()).clear();
-
+            ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlayers[currentSongIndex].pause();
+            ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[currentSongIndex].setVisibility(VISIBLE);
         }
 
         @Override

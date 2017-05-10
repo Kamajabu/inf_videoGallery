@@ -3,6 +3,7 @@ package com.kamajabu.infvideogallery.musicmanager;
 import android.app.DialogFragment;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -74,6 +75,7 @@ public abstract class MusicPlayerControls extends DialogFragment {
     @OnClick(R.id.btnPlay)
     public void playButtonWasClicked() {
 
+        ((MyViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[currentSongIndex].setVisibility(View.VISIBLE);
 
     }
 

@@ -27,15 +27,20 @@ public class MyViewPagerAdapter extends PagerAdapter {
     private LayoutInflater layoutInflater;
     private ArrayList<Image> images;
     private Context activityContext;
-    VideoView videoView;
-    View placeholder;
-    SlideshowMusicFragment slideshowMusicFragment;
 
-    public MyViewPagerAdapter(ArrayList<Image> images, Context context, SlideshowMusicFragment slideshowMusicFragment) {
+    public VideoView[] arrayOfPlayers;
+    public View[] arrayOfPlaceholders;
+
+
+
+    public MyViewPagerAdapter(ArrayList<Image> images, Context context) {
         this.images = images;
         this.activityContext = context;
-        this.slideshowMusicFragment =slideshowMusicFragment;
+        arrayOfPlayers = new VideoView[images.size()];
+        arrayOfPlaceholders = new View[images.size()];
     }
+
+
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
@@ -47,19 +52,24 @@ public class MyViewPagerAdapter extends PagerAdapter {
         View view = layoutInflater.inflate(R.layout.image_fullscreen_preview, container, false);
 
 //            ImageView imageViewPreview = (ImageView) view.findViewById(R.id.image_preview);
+        VideoView videoView;
+        View placeholder;
 
-        videoView =
-                (VideoView) view.findViewById(R.id.videoView);
+        videoView = (VideoView) view.findViewById(R.id.videoView);
+        placeholder = view.findViewById(R.id.placeholder);
 
+        arrayOfPlayers[position] = videoView;
+        arrayOfPlaceholders[position] = placeholder;
 
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
         Uri videoUri = Uri.parse(videoUrl);
+
         videoView.setVideoURI(videoUri);
-        videoView.start();
 
         final ProgressBar finalProgressBar = progressBar;
         ProgressBar finalProgressBar1 = progressBar;
-        placeholder = view.findViewById(R.id.placeholder);
+
+//        videoView.start();
 
         videoView.setOnPreparedListener(mp -> {
 
@@ -70,7 +80,7 @@ public class MyViewPagerAdapter extends PagerAdapter {
             placeholder.setVisibility(GONE);
                 finalProgressBar.setVisibility(GONE);
 
-                mp1.start();
+//                mp1.start();
             });
         });
 
@@ -99,8 +109,8 @@ public class MyViewPagerAdapter extends PagerAdapter {
     }
 
     public void clear() {
-        videoView.setVisibility(GONE);
-        videoView.setVisibility(VISIBLE);
+//        videoView.setVisibility(GONE);
+//        videoView.setVisibility(VISIBLE);
 //        placeholder.setVisibility(VISIBLE);
     }
 }
