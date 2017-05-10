@@ -88,7 +88,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void onClickFinish(View child, int position) {
-                if(previewIndex>0) {
+                if(previewIndex>=0) {
                     mAdapter.videoViewElements[previewIndex].video.setVisibility(GONE);
                     mAdapter.videoViewElements[previewIndex].progressBar.setVisibility(GONE);
                     mAdapter.videoViewElements[previewIndex].placeholder.setVisibility(VISIBLE);
