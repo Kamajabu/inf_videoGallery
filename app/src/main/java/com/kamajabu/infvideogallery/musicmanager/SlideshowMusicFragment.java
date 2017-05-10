@@ -4,6 +4,7 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -26,6 +27,8 @@ import static android.view.View.VISIBLE;
 
 public class SlideshowMusicFragment extends MusicPlayerControls
         implements MediaPlayer.OnCompletionListener, SeekBar.OnSeekBarChangeListener {
+
+    ViewPager.OnPageChangeListener viewPagerPageChangeListener;
 
     public static SlideshowMusicFragment newInstance() {
         SlideshowMusicFragment f = new SlideshowMusicFragment();
@@ -62,16 +65,38 @@ public class SlideshowMusicFragment extends MusicPlayerControls
 
         myViewPagerAdapter = new MyViewPagerAdapter(images, getActivity());
         viewPager.setAdapter(myViewPagerAdapter);
-        ViewPager.OnPageChangeListener viewPagerPageChangeListener = new VideoViewPageListener();
-        viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
+
         setCurrentItem(selectedPosition);
 
+        viewPagerPageChangeListener = new VideoViewPageListener(currentVideoIndex, viewPager, this);
+        viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
+
         // By default play first song
-        playSong(selectedPosition);
+//        playSong(selectedPosition);
+
+        
 
         Log.d("Fragment", "Created");
 
         return v;
+    }
+
+    public void loadAndStartVideo(VideoViewElements currentElements) {
+        currentElements.video.setVisibility(VISIBLE);
+
+        String videoUrl = "https://player.vimeo.com/external/212638612.sd.mp4?s=49b6d5208d2f45308b37c1fcb551ecf33b388f30";
+        Uri videoUri = Uri.parse(videoUrl);
+
+        currentElements.video.setVideoURI(videoUri);
+        currentElements.progressBar.setVisibility(VISIBLE);
+        currentElements.video.setOnPreparedListener(mp -> {
+            mp.start();
+            //this shit is needed for avoiding making a hole in fragment before starting video
+            mp.setOnVideoSizeChangedListener((mp1, arg1, arg2) -> {
+                currentElements.progressBar.setVisibility(GONE);
+                currentElements.placeholder.setVisibility(GONE);
+            });
+        });
     }
 
     @OnClick(R.id.btnPlaylist)
