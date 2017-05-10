@@ -46,8 +46,9 @@ public class ContentViewPagerAdapter extends PagerAdapter {
         VideoView videoView = (VideoView) view.findViewById(R.id.videoView);
         ImageView placeholder = (ImageView) view.findViewById(R.id.placeholder);
         ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
+        String videoUrl = images.get(position).getVideoUrl();
 
-        videoViewElements[position] = new VideoViewElements(videoView, placeholder, progressBar);
+        videoViewElements[position] = new VideoViewElements(videoView, placeholder, progressBar, videoUrl);
 
         if (isFirstElement) {
             parent.loadAndStartVideo(videoViewElements[position]);

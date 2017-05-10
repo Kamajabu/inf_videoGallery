@@ -83,8 +83,7 @@ public class VideoSlideshowContainerFragment extends VideoPlayerControlsAbstract
     public void loadAndStartVideo(VideoViewElements currentElements) {
         currentElements.video.setVisibility(VISIBLE);
 
-        String videoUrl = "https://player.vimeo.com/external/212638612.sd.mp4?s=49b6d5208d2f45308b37c1fcb551ecf33b388f30";
-        Uri videoUri = Uri.parse(videoUrl);
+        Uri videoUri = Uri.parse(currentElements.videoUrl);
 
         currentElements.video.setVideoURI(videoUri);
         currentElements.progressBar.setVisibility(VISIBLE);

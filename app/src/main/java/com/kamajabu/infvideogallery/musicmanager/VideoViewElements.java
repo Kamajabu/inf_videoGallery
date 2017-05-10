@@ -12,10 +12,12 @@ public class VideoViewElements {
     VideoView video;
     ImageView placeholder;
     ProgressBar progressBar;
+    String videoUrl;
 
-    public VideoViewElements(VideoView video, ImageView placeholder, ProgressBar progressBar) {
+    public VideoViewElements(VideoView video, ImageView placeholder, ProgressBar progressBar, String videoUrl) {
         this.video = video;
         this.placeholder = placeholder;
         this.progressBar = progressBar;
+        this.videoUrl = videoUrl;
     }
 }
