@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
@@ -83,8 +82,6 @@ public class VideoSlideshowContainerFragment extends VideoPlayerControlsAbstract
 
     public void loadAndStartVideo(VideoViewElements currentElements) {
         currentMediaPlayer = null;
-        playerFooter.animate().alpha(0.0f);
-        songProgressBar.animate().alpha(0.0f);
     
         currentElements.video.setVisibility(VISIBLE);
 
@@ -98,8 +95,6 @@ public class VideoSlideshowContainerFragment extends VideoPlayerControlsAbstract
     
             //this shit is needed for avoiding making a hole in fragment before starting video
             mp.setOnVideoSizeChangedListener((mp1, arg1, arg2) -> {
-                songProgressBar.animate().alpha(1.0f);
-                playerFooter.animate().alpha(1.0f);
     
                 btnPlay.setImageResource(R.drawable.btn_pause);
     

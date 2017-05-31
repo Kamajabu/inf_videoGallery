@@ -31,7 +31,6 @@ public abstract class VideoPlayerControlsAbstract extends DialogFragment {
     protected int selectedPosition = 0;
 
     //music player fields
-    protected static final String RES_PREFIX = "android.resource://com.kamajabu.infmusicgallery/";
 
     // Media Player
     // Handler to update UI timer, progress bar etc,.
