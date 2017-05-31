@@ -1,10 +1,12 @@
 package com.kamajabu.infvideogallery.musicmanager;
 
 import android.app.DialogFragment;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -43,6 +45,8 @@ public abstract class VideoPlayerControlsAbstract extends DialogFragment {
     protected boolean isRepeat = false;
     protected ArrayList<HashMap<String, String>> songsList = new ArrayList<>();
 
+    @BindView(R.id.player_footer_bg)
+    LinearLayout playerFooter;
 
     @BindView(R.id.btnPlay)
     ImageButton btnPlay;
@@ -69,14 +73,29 @@ public abstract class VideoPlayerControlsAbstract extends DialogFragment {
     @BindView(R.id.songTotalDurationLabel)
     TextView songTotalDurationLabel;
     private ImageView musicPicture;
-
+    
+    MediaPlayer currentMediaPlayer;
+    
+    
     @OnClick(R.id.btnPlay)
     public void playButtonWasClicked() {
-
-//        ((ContentViewPagerAdapter) viewPager.getAdapter()).arrayOfPlaceholders[currentVideoIndex].setVisibility(View.VISIBLE);
-
-    }
-
+        if (currentMediaPlayer == null && playerFooter.getAlpha() < 1.0f) {
+            return;
+        }
+        // check for already playing
+        //TODO refactor
+        if (currentMediaPlayer.isPlaying()) {
+                currentMediaPlayer.pause();
+                // Changing button image to play button
+                btnPlay.setImageResource(R.drawable.btn_play);
+        } else {
+            // Resume song
+                currentMediaPlayer.start();
+                // Changing button image to pause button
+                btnPlay.setImageResource(R.drawable.btn_pause);
+            }
+        }
+    
     @OnClick(R.id.btnForward)
     public void buttonForwardWasClicked() {
 

@@ -70,17 +70,18 @@ public class VideoSlideshowContainerFragment extends VideoPlayerControlsAbstract
         viewPagerPageChangeListener = new VideoViewPageListener(currentVideoIndex, viewPager, this);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
         setCurrentItem(selectedPosition);
-
-
-        // By default play first song
-//        playSong(selectedPosition);
-
+        
         Log.d("Fragment", "Created");
+    
+        playerFooter.setAlpha(0.0f);
 
         return v;
     }
 
     public void loadAndStartVideo(VideoViewElements currentElements) {
+        currentMediaPlayer = null;
+        playerFooter.animate().alpha(0.0f);
+    
         currentElements.video.setVisibility(VISIBLE);
 
         Uri videoUri = Uri.parse(currentElements.videoUrl);
@@ -88,9 +89,15 @@ public class VideoSlideshowContainerFragment extends VideoPlayerControlsAbstract
         currentElements.video.setVideoURI(videoUri);
         currentElements.progressBar.setVisibility(VISIBLE);
         currentElements.video.setOnPreparedListener(mp -> {
+            currentMediaPlayer = mp;
             mp.start();
+    
             //this shit is needed for avoiding making a hole in fragment before starting video
             mp.setOnVideoSizeChangedListener((mp1, arg1, arg2) -> {
+                playerFooter.animate().alpha(1.0f);
+    
+                btnPlay.setImageResource(R.drawable.btn_pause);
+    
                 currentElements.progressBar.setVisibility(GONE);
                 currentElements.placeholder.setVisibility(GONE);
             });
@@ -192,7 +199,7 @@ public class VideoSlideshowContainerFragment extends VideoPlayerControlsAbstract
         } else if (isShuffle) {
             // shuffle is on - play a random song
             Random rand = new Random();
-            currentVideoIndex = rand.nextInt((songsList.size() - 1) - 0 + 1) + 0;
+            currentVideoIndex = rand.nextInt((songsList.size() - 1) + 1);
             playSong(currentVideoIndex);
         } else {
             // no repeat or shuffle ON - play next song

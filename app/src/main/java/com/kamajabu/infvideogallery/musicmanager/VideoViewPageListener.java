@@ -55,7 +55,7 @@ public class VideoViewPageListener implements ViewPager.OnPageChangeListener {
                 previousElements.video.setVisibility(GONE);
                 previousElements.placeholder.setVisibility(VISIBLE);
             }
-
+            
             positionChanged = false;
         }
     }
