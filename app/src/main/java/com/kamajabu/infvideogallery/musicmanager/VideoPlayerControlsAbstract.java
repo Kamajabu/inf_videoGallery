@@ -36,7 +36,6 @@ public abstract class VideoPlayerControlsAbstract extends DialogFragment {
     // Handler to update UI timer, progress bar etc,.
     protected Handler mHandler = new Handler();
 
-    protected SongsManager songManager;
     protected Utilities utils;
 
     protected int currentVideoIndex = 0;

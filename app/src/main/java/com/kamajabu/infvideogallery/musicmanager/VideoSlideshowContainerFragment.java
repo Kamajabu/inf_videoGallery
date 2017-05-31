@@ -1,13 +1,11 @@
 package com.kamajabu.infvideogallery.musicmanager;
 
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +33,6 @@ public class VideoSlideshowContainerFragment extends VideoPlayerControlsAbstract
         return f;
     }
 
-
     @Override
     public void onActivityCreated(Bundle arg0) {
         super.onActivityCreated(arg0);
@@ -54,15 +51,12 @@ public class VideoSlideshowContainerFragment extends VideoPlayerControlsAbstract
         images = (ArrayList<Image>) getArguments().getSerializable("images");
         selectedPosition = getArguments().getInt("position");
 
-        songManager = new SongsManager();
         utils = new Utilities();
 
         // Listeners
         songProgressBar.setOnTouchListener((v1, event) -> true);
-        
+
         // Getting all songs list
-        Context playListContext = v.getContext();
-        songsList = songManager.getPlayListFromContent(playListContext);
 
         myViewPagerAdapter = new ContentViewPagerAdapter(images, getActivity(), this);
         viewPager.setAdapter(myViewPagerAdapter);
@@ -70,19 +64,13 @@ public class VideoSlideshowContainerFragment extends VideoPlayerControlsAbstract
         viewPagerPageChangeListener = new VideoViewPageListener(currentVideoIndex, viewPager, this);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
         setCurrentItem(selectedPosition);
-        
-        Log.d("Fragment", "Created");
-    
-        playerFooter.setAlpha(0.0f);
 
         return v;
     }
-    
-
 
     public void loadAndStartVideo(VideoViewElements currentElements) {
         currentMediaPlayer = null;
-    
+
         currentElements.video.setVisibility(VISIBLE);
 
         Uri videoUri = Uri.parse(currentElements.videoUrl);
@@ -92,12 +80,12 @@ public class VideoSlideshowContainerFragment extends VideoPlayerControlsAbstract
         currentElements.video.setOnPreparedListener(mp -> {
             currentMediaPlayer = mp;
             mp.start();
-    
+
             //this shit is needed for avoiding making a hole in fragment before starting video
             mp.setOnVideoSizeChangedListener((mp1, arg1, arg2) -> {
-    
+
                 btnPlay.setImageResource(R.drawable.btn_pause);
-    
+
                 currentElements.progressBar.setVisibility(GONE);
                 currentElements.placeholder.setVisibility(GONE);
                 updateProgressBar();
@@ -165,27 +153,27 @@ public class VideoSlideshowContainerFragment extends VideoPlayerControlsAbstract
         // Play song
 
     }
-    
+
     public void updateProgressBar() {
         mHandler.postDelayed(mUpdateTimeTask, 100);
     }
-    
+
     private Runnable mUpdateTimeTask = new Runnable() {
         public void run() {
-            if(currentMediaPlayer!=null) {
+            if (currentMediaPlayer != null) {
                 long totalDuration = currentMediaPlayer.getDuration();
                 long currentDuration = currentMediaPlayer.getCurrentPosition();
-    
+
                 // Displaying Total Duration time
                 songTotalDurationLabel.setText("" + utils.milliSecondsToTimer(totalDuration));
                 // Displaying time completed playing
                 songCurrentDurationLabel.setText("" + utils.milliSecondsToTimer(currentDuration));
-    
+
                 // Updating progress bar
                 int progress = (int) (utils.getProgressPercentage(currentDuration, totalDuration));
                 //Log.d("Progress", ""+progress);
                 songProgressBar.setProgress(progress);
-    
+
                 // Running this thread after 100 milliseconds
                 mHandler.postDelayed(this, 100);
             }
