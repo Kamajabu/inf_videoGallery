@@ -100,6 +100,7 @@
 
     <!-- Progress Bar/Seek bar -->
     <SeekBar
+        android:animateLayoutChanges="true"
         android:id="@+id/songProgressBar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

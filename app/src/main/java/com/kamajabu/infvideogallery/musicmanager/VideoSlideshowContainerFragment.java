@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
@@ -58,8 +59,8 @@ public class VideoSlideshowContainerFragment extends VideoPlayerControlsAbstract
         utils = new Utilities();
 
         // Listeners
-        songProgressBar.setOnSeekBarChangeListener(this); // Important
-
+        songProgressBar.setOnTouchListener((v1, event) -> true);
+        
         // Getting all songs list
         Context playListContext = v.getContext();
         songsList = songManager.getPlayListFromContent(playListContext);
@@ -77,10 +78,13 @@ public class VideoSlideshowContainerFragment extends VideoPlayerControlsAbstract
 
         return v;
     }
+    
+
 
     public void loadAndStartVideo(VideoViewElements currentElements) {
         currentMediaPlayer = null;
         playerFooter.animate().alpha(0.0f);
+        songProgressBar.animate().alpha(0.0f);
     
         currentElements.video.setVisibility(VISIBLE);
 
@@ -94,12 +98,14 @@ public class VideoSlideshowContainerFragment extends VideoPlayerControlsAbstract
     
             //this shit is needed for avoiding making a hole in fragment before starting video
             mp.setOnVideoSizeChangedListener((mp1, arg1, arg2) -> {
+                songProgressBar.animate().alpha(1.0f);
                 playerFooter.animate().alpha(1.0f);
     
                 btnPlay.setImageResource(R.drawable.btn_pause);
     
                 currentElements.progressBar.setVisibility(GONE);
                 currentElements.placeholder.setVisibility(GONE);
+                updateProgressBar();
             });
         });
     }
@@ -164,13 +170,31 @@ public class VideoSlideshowContainerFragment extends VideoPlayerControlsAbstract
         // Play song
 
     }
-
+    
     public void updateProgressBar() {
         mHandler.postDelayed(mUpdateTimeTask, 100);
     }
-
-    private Runnable mUpdateTimeTask = () -> {
-
+    
+    private Runnable mUpdateTimeTask = new Runnable() {
+        public void run() {
+            if(currentMediaPlayer!=null) {
+                long totalDuration = currentMediaPlayer.getDuration();
+                long currentDuration = currentMediaPlayer.getCurrentPosition();
+    
+                // Displaying Total Duration time
+                songTotalDurationLabel.setText("" + utils.milliSecondsToTimer(totalDuration));
+                // Displaying time completed playing
+                songCurrentDurationLabel.setText("" + utils.milliSecondsToTimer(currentDuration));
+    
+                // Updating progress bar
+                int progress = (int) (utils.getProgressPercentage(currentDuration, totalDuration));
+                //Log.d("Progress", ""+progress);
+                songProgressBar.setProgress(progress);
+    
+                // Running this thread after 100 milliseconds
+                mHandler.postDelayed(this, 100);
+            }
+        }
     };
 
     @Override
